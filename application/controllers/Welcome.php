@@ -22,4 +22,10 @@ class Welcome extends CI_Controller {
 	{
 		$this->load->view('welcome_message');
 	}
+	
+	public function body()
+	{
+		$this->load->view('head', ['page_title' => "Bootstrap Test"]);
+		$this->load->view('foot');
+	}
 }
