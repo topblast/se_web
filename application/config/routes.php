@@ -54,6 +54,7 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 $route['admin/menu/add'] = "admin/menu_add";
+$route['admin/menu/add/verify'] = "admin/verify_menu_add";
 $route['admin/menu/modify/(:num)'] = "admin/menu_modify/$1";
 $route['admin/menu/delete/(:num)'] = "admin/menu_remove/$1";
 $route['admin/menu/modify/verify/(:num)'] = "admin/verify_menu_modify/$1";
