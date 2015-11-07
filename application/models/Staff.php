@@ -19,11 +19,16 @@ class Staff extends CI_Model {
 		
 		$result = $this->db->query($query, array("$username", (string)MD5("$password".$result->row()->staff_salt)));
 		
-		if ($result->num_rows() == 1)
+		if ($result->num_rows() == 0)
 		{
-			return $result->row();
+			return FALSE;
 		}
-		return FALSE;
+		$staff = $result->row();
+		
+		$query = 'UPDATE "staff" SET "staff_lastlogged"=DATETIME(\'now\') WHERE "staff_id"=?;';
+		$this->db->query($query, array($staff->id));
+		
+		return $staff;
 	}
 }
 ?>
