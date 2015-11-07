@@ -4,12 +4,13 @@
 <div class="panel panel-default">
 	<div class="panel-heading"><h2>Menu List</h2></div>
 	<div class="panel-body">
-		<a href="<?php echo site_url('admin/menu/add'); ?>" class="btn btn-default"><span class="glyphicon glyphicon-plus-sign"></span> New</a>
+		<a href="<?php echo site_url('admin/menu/add'); ?>" class="btn btn-default"><span class="glyphicon glyphicon-plus-sign"></span> Add Item</a>
 	</div>
 	
 	<table class="table">
 		<tr>
 			<th>#</th>
+			<th>Image</th>
 			<th>Name</th>
 			<th>Price $</th>
 			<th>Controls</th>
@@ -17,6 +18,7 @@
 		<?php foreach($list as $row):?>
 		<tr>
 			<td><?php echo $row->id; ?></td>
+			<td><img class="media-object" src="<?php echo base_url('images/'.$row->image); ?>" alt="Image of <?php echo $row->name; ?>">
 			<td><?php echo $row->name; ?></td>
 			<td><?php echo number_format($row->price, 2); ?></td>
 			<td>

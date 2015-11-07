@@ -12,7 +12,7 @@ class Menu extends CI_Model {
 	{
 		$id = (int)$id;
 		
-		$query = 'SELECT "menu_id" as id, "menu_name" as name, "menu_price" as price FROM "menu_items" where "menu_id"=? LIMIT 1';
+		$query = 'SELECT "menu_id" as id, "menu_name" as name, "menu_price" as price, "menu_image" as image FROM "menu_items" where "menu_id"=? LIMIT 1';
 		$result = $this->db->query($query, array($id));
 		
 		if ($result->num_rows() == 0)
@@ -25,11 +25,49 @@ class Menu extends CI_Model {
 		return $row;
 	}
 	
+	public function get_image_path($id)
+	{
+		$id = (int)$id;
+		
+		$query = 'SELECT "menu_image" from "menu_items" WHERE "menu_id"=? LIMIT 1;';
+		$result = $this->db->query($query, array($id));
+		
+		if ($result->num_rows() == 0)
+		{
+			return NULL;
+		}
+		
+		return $result->row()->menu_image;
+	}
+	
+	public function set_image_path($id, $path, $staff)
+	{
+		if (!isset($staff))
+			return FALSE;
+		$id = (int)$id;
+		$path = "$path";
+		$staff = (int)$staff;
+		
+		$exist_ing = 'SELECT "menu_image" from "menu_items" WHERE "menu_id"=?;';
+		$res = $this->db->query($exist_ing, array($id));
+		if ($res->num_rows() == 0)
+			return FALSE;
+		$img = $res->row()->menu_image;
+		if (!is_null($img))
+			unlink("./images/".$res->row()->menu_image);
+		$query_ing = 'UPDATE "menu_items" SET "menu_image"=? WHERE "menu_id"=?;';
+		$log_ing = 'INSERT INTO "log_menu_items" ("log_staff_id","log_type","menu_id","menu_name","menu_price", "menu_image") SELECT ? as s , \'modify\' as t, i."menu_id", i."menu_name", i."menu_price", ? as img FROM "menu_items" AS i WHERE i."menu_id" = ?;';
+		
+		$this->db->query($query_ing, array($path, $id));
+		$this->db->query($log_ing, array($staff, $path, $id));
+		return $id;
+	}
+	
 	public function list_menu($limit=-1)
 	{
 		$limit = (int)$limit;
 		
-		$query = 'SELECT "menu_id" as id, "menu_name" as name, "menu_price" as price FROM "menu_items" LIMIT ?';
+		$query = 'SELECT "menu_id" as id, "menu_name" as name, "menu_price" as price, "menu_image" as image FROM "menu_items" LIMIT ?';
 		
 		$result = $this->db->query($query, array($limit));
 		
@@ -47,20 +85,51 @@ class Menu extends CI_Model {
 		return $data;
 	}
 	
-	public function new_menu($menu_name, $price, $staff)
+	public function new_menu($menu_name, $price, $staff, $image=NULL)
 	{
 		if (!isset($staff))
 			return FALSE;
 		$menu_name = "$menu_name";
 		$price = (float)$price;
 		$staff = (int)$staff;
+		if ($image !== NULL)
+			$image = "$image";
 		
-		$query_ing = 'INSERT INTO "menu_items" ("menu_id", "menu_name", "menu_price") VALUES (NULL,?,?);';
-		$log_ing = 'INSERT INTO "log_menu_items" ("log_staff_id","log_type","menu_id","menu_name","menu_price") VALUES (?, \'insert\',?,?,?);';
+		$query_ing = 'INSERT INTO "menu_items" ("menu_id", "menu_name", "menu_price","menu_image") VALUES (NULL,?,?,?);';
+		$log_ing = 'INSERT INTO "log_menu_items" ("log_staff_id","log_type","menu_id","menu_name","menu_price", "menu_image") VALUES (?, \'insert\',?,?,?,?);';
 		
-		$this->db->query($query_ing, array($menu_name, $price));
+		$this->db->query($query_ing, array($menu_name, $price, $image));
 		$id = $this->db->insert_id();
-		$this->db->query($log_ing, array($staff, $id, $menu_name, $price));
+		$this->db->query($log_ing, array($staff, $id, $menu_name, $price, $image));
+		return $id;
+	}
+	
+	public function mod_menu_and_image($id, $menu_name, $price, $path, $staff)
+	{
+		if (!isset($staff))
+			return FALSE;
+		$id = (int)$id;
+		$menu_name = "$menu_name";
+		$price = (float)$price;
+		$staff = (int)$staff;
+		$path = "$path";
+		
+		$exist_ing = 'SELECT "menu_image" from "menu_items" WHERE "menu_id"=?;';
+		$res = $this->db->query($exist_ing, array($id));
+		
+		if ($res->num_rows() == 0)
+			return FALSE;
+		
+		$img = $res->row()->menu_image;
+		
+		if (!is_null($img))
+			unlink("./images/".$res->row()->menu_image);
+		
+		$query_ing = 'UPDATE "menu_items" SET "menu_name"=?, "menu_price"=?, "menu_image"=? WHERE "menu_id" = ?;';
+		$log_ing = 'INSERT INTO "log_menu_items" ("log_staff_id","log_type","menu_id","menu_name","menu_price", "menu_image") VALUES (?, \'modify\',?,?,?,?);';
+		
+		$this->db->query($query_ing, array($menu_name, $price, $path, $id));
+		$this->db->query($log_ing, array($staff, $id, $menu_name, $price, $path));
 		return $id;
 	}
 	
@@ -74,10 +143,10 @@ class Menu extends CI_Model {
 		$staff = (int)$staff;
 		
 		$query_ing = 'UPDATE "menu_items" SET "menu_name"=?, "menu_price"=? WHERE "menu_id" = ?;';
-		$log_ing = 'INSERT INTO "log_menu_items" ("log_staff_id","log_type","menu_id","menu_name","menu_price") VALUES (?, \'modify\',?,?,?);';
+		$log_ing = 'INSERT INTO "log_menu_items" ("log_staff_id","log_type","menu_id","menu_name","menu_price", "menu_image") VALUES (?, \'modify\',?,?,?,?);';
 		
-		$this->db->query($query_ing, array($menu_name, $price, $id));
-		$this->db->query($log_ing, array($staff, $id, $menu_name, $price));
+		$this->db->query($query_ing, array($menu_name, $price,$id));
+		$this->db->query($log_ing, array($staff, $id, $menu_name, $price, $this->get_image_path($id)));
 		return $id;
 	}
 	
@@ -88,8 +157,15 @@ class Menu extends CI_Model {
 		$id = (int)$id;
 		$staff = (int)$staff;
 		
+		$exist_ing = 'SELECT "menu_image" from "menu_items" WHERE "menu_id"=?;';
+		$res = $this->db->query($exist_ing, array($id));
+		if ($res->num_rows() == 0)
+			return FALSE;
+		$img = $res->row()->menu_image;
+		if (!is_null($img))
+			unlink("./images/".$res->row()->menu_image);
 		$query_ing = 'DELETE FROM "menu_items" WHERE "menu_id" = ?;';
-		$log_ing = 'INSERT INTO "log_menu_items" ("log_staff_id","log_type","menu_id","menu_name","menu_price") SELECT ? as s , \'delete\' as t, i."menu_id", i."menu_name", i."menu_price" FROM "menu_items" AS i WHERE i."menu_id" = ?;';
+		$log_ing = 'INSERT INTO "log_menu_items" ("log_staff_id","log_type","menu_id","menu_name","menu_price", "menu_image") SELECT ? as s , \'delete\' as t, i."menu_id", i."menu_name", i."menu_price", i."menu_image" FROM "menu_items" AS i WHERE i."menu_id" = ?;';
 		
 		$this->db->query($log_ing, array($staff, $id));
 		$this->db->query($query_ing, array($id));

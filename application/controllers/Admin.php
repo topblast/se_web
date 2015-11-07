@@ -64,8 +64,10 @@ class Admin extends CI_Controller {
 		$this->form_validation->set_rules('name', 'Name', 'trim|required|xss_clean');
 		$this->form_validation->set_rules('price', 'Price', 'trim|required|xss_clean');
 		$this->form_validation->set_rules('check[]', 'Ingredients', 'trim|required|xss_clean');
+		$this->form_validation->set_rules('image', 'Image', 'trim|xss_clean|callback_do_upload');
+		$this->form_validation->set_rules('blank', 'ERROR', 'callback_check_menu_add');
 		
-		if ($this->form_validation->run() == FALSE || $this->check_menu_add() == FALSE)
+		if ($this->form_validation->run() == FALSE)
 		{
 			$this->menu_add();
 		}
@@ -75,7 +77,27 @@ class Admin extends CI_Controller {
 		}
 	}
 	
-	public function check_menu_add()
+	public function do_upload($image)
+	{		
+		$config['upload_path'] = './images/';
+		$config['allowed_types'] = 'gif|jpg|png';
+		$config['max_size']	= '2048';
+		$config['encrypt_name'] = TRUE;
+		$config['max_width']  = '256';
+		$config['max_height']  = '256';
+
+		$this->load->library('upload', $config);
+		
+		if ( ! $this->upload->do_upload('image') && $_FILES['image']['error'] != 4)
+        {
+			$this->form_validation->set_message('do_upload', $this->upload->display_errors());
+			echo $this->upload->display_errors();
+			return FALSE;
+		}
+		return TRUE;
+	}
+	
+	public function check_menu_add($blank)
 	{
    		$name = $this->input->post('name');
    		$price = $this->input->post('price');
@@ -87,12 +109,16 @@ class Admin extends CI_Controller {
 		   
 		$session_data = $this->session->userdata('logged_in');
 		
-		$result = $this->Menu->new_menu($name, $price, $session_data->id);
+		if ($_FILES['image']['error'] != 4)
+			$result = $this->Menu->new_menu($name, $price, $session_data->id, $this->upload->data('file_name'));
+		else
+			$result = $this->Menu->new_menu($name, $price, $session_data->id);
 		if ($result === FALSE)
 		{
 			$this->form_validation->set_message('check_menu_add', 'Database Error, failed to add menu item.');
 			return FALSE;
 		}
+		
 		foreach($check as $id => $val)
 		{
 			$this->Menu->new_menu_ingredient($result, $id, $session_data->id);
@@ -136,9 +162,11 @@ class Admin extends CI_Controller {
 		$this->form_validation->set_rules('name', 'Name', 'trim|required|xss_clean');
 		$this->form_validation->set_rules('price', 'Price', 'trim|required|xss_clean');
 		$this->form_validation->set_rules('check[]', 'Ingredients', 'trim|required|xss_clean');
+		$this->form_validation->set_rules('image', 'Image', 'trim|xss_clean|callback_do_upload');
+		$_POST['id'] = $id;
+		$this->form_validation->set_rules('id', 'ERROR', 'callback_check_menu_modify');
 		
-		if ($this->form_validation->run() == FALSE 
-			|| $this->check_menu_modify($this->input->post('check[]'), $id) == FALSE)
+		if ($this->form_validation->run() == FALSE)
 		{
 			$this->menu_modify($id);
 		}
@@ -146,23 +174,29 @@ class Admin extends CI_Controller {
 			redirect('admin/menu', 'refresh');
 	}
 	
-	public function check_menu_modify($check, $id)
+	public function check_menu_modify($id)
 	{
    		$name = $this->input->post('name');
    		$price = $this->input->post('price');
 		$price = round((float)$price, 2, PHP_ROUND_HALF_UP);
+		$check = $this->input->post('check[]');
 		
 		$this->load->model("Menu");
    		$username = $this->input->post('username');
 		   
 		$session_data = $this->session->userdata('logged_in');
 		
-		$result = $this->Menu->mod_menu($id, $name, $price, $session_data->id);
+		if ($_FILES['image']['error'] != 4)
+			$result = $this->Menu->mod_menu_and_image($id, $name, $price, $this->upload->data('file_name'), $session_data->id);
+		else
+			$result = $this->Menu->mod_menu($id, $name, $price, $session_data->id);
+			
 		if ($result === FALSE)
 		{
 			$this->form_validation->set_message('check_menu_add', 'Database Error, failed to modify menu item.');
 			return FALSE;
 		}
+		
 		$ings = $this->Menu->list_menu_ingredients($result);
 		foreach($ings as $ing)
 		{
