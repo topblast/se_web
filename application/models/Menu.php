@@ -21,6 +21,15 @@ class Menu extends CI_Model {
 		}
 		$row = $result->row();
 		$row->ingredients = $this->list_menu_ingredients($row->id);
+		$row->available = TRUE;
+		foreach($row->ingredients as $ing)
+		{
+			if (!((bool)$ing->available) || ((int)$ing->stock) > 1)
+			{
+				$row->available = FALSE;
+				break;
+			}
+		}
 		
 		return $row;
 	}
@@ -80,6 +89,17 @@ class Menu extends CI_Model {
 		$data = array();
 		foreach ($menus as $row) {
 			$row->ingredients = $this->list_menu_ingredients($row->id);
+			
+			$row->available = TRUE;
+			foreach($row->ingredients as $ing)
+			{
+				if (!((bool)$ing->available) || ((int)$ing->stock) < 1)
+				{
+					$row->available = FALSE;
+					break;
+				}
+			}
+			
 			$data[] = $row;
 		}
 		return $data;

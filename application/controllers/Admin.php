@@ -105,7 +105,6 @@ class Admin extends CI_Controller {
 		$check = $this->input->post('check[]');
 		
 		$this->load->model("Menu");
-   		$username = $this->input->post('username');
 		   
 		$session_data = $this->session->userdata('logged_in');
 		
@@ -182,7 +181,6 @@ class Admin extends CI_Controller {
 		$check = $this->input->post('check[]');
 		
 		$this->load->model("Menu");
-   		$username = $this->input->post('username');
 		   
 		$session_data = $this->session->userdata('logged_in');
 		
@@ -227,6 +225,148 @@ class Admin extends CI_Controller {
 		$this->Menu->del_menu((int)$id, $session_data->id);
 		
 		redirect('admin/menu', 'refresh');
+	}
+	
+	public function ingredients()
+	{
+		$session_data = $this->session->userdata('logged_in');
+		
+		$this->load->model("Ingredients");
+		
+		$menu = $this->Ingredients->list_ingredients();
+		
+		$this->load->helper(array('form'));
+		$this->load->view('head', ['page_title' => "Admin"]);
+		$this->load->view('admin/head', ['firstname' => $session_data->firstname,'lastname' => $session_data->lastname]);
+		$this->load->view('admin/ingredient/list', ['list' => $menu]);
+		$this->load->view('foot');
+	}
+	
+	public function ingredients_add()
+	{
+		$session_data = $this->session->userdata('logged_in');
+		
+		$this->load->helper(array('form'));
+		$this->load->view('head', ['page_title' => "Admin"]);
+		$this->load->view('admin/head', ['firstname' => $session_data->firstname,'lastname' => $session_data->lastname]);
+		$this->load->view('admin/ingredient/add');
+		$this->load->view('foot');
+	}
+	
+	public function ingredients_modify($id)
+	{
+		$session_data = $this->session->userdata('logged_in');
+		
+		$this->load->model("Ingredients");
+		
+		$ing = $this->Ingredients->get_ingredient($id);
+		
+		if (is_null($ing))
+		{
+			redirect('admin/ingredients');
+		}
+		
+		$this->load->helper(array('form'));
+		$this->load->view('head', ['page_title' => "Admin"]);
+		$this->load->view('admin/head', ['firstname' => $session_data->firstname,'lastname' => $session_data->lastname]);
+		$this->load->view('admin/ingredient/modify', ['id'=>$id, 'name' => $ing->name, 'available' => (bool)$ing->available, 'stock' => (int)$ing->stock]);
+		$this->load->view('foot');
+	}
+	
+	
+	public function verify_ingredients_add()
+	{
+		$this->load->library('form_validation');
+		
+		$this->form_validation->set_rules('name', 'Name', 'trim|required|xss_clean');
+		$this->form_validation->set_rules('stock', 'Stock', 'trim|required|xss_clean');
+		$this->form_validation->set_rules('available', 'Available', 'trim|xss_clean');
+		
+		$this->form_validation->set_rules('blank', 'ERROR', 'callback_check_ingredients_add');
+		
+		if ($this->form_validation->run() == FALSE)
+		{
+			$this->ingredients_add();
+		}
+		else
+		{
+			redirect('admin/ingredients', 'refresh');
+		}
+	}
+	
+	
+	public function verify_ingredients_modify($id)
+	{
+		$this->load->library('form_validation');
+		
+		$this->form_validation->set_rules('name', 'Name', 'trim|required|xss_clean');
+		$this->form_validation->set_rules('stock', 'Stock', 'trim|required|xss_clean');
+		$this->form_validation->set_rules('available', 'Available', 'trim|xss_clean');
+		$_POST['id'] = $id;
+		$this->form_validation->set_rules('id', 'ERROR', 'callback_check_ingredients_modify');
+		
+		if ($this->form_validation->run() == FALSE)
+		{
+			$this->ingredients_add();
+		}
+		else
+		{
+			redirect('admin/ingredients', 'refresh');
+		}
+	}
+	
+	public function check_ingredients_add($blank)
+	{
+   		$name = $this->input->post('name');
+   		$stock = (int)$this->input->post('stock');
+		$available = (bool)$this->input->post('available');
+		
+		$this->load->model("Ingredients");
+		   
+		$session_data = $this->session->userdata('logged_in');
+		
+		$result = $this->Ingredients->new_ingredients($name, $available, $stock, $session_data->id);
+			
+		if ($result === FALSE)
+		{
+			$this->form_validation->set_message('check_ingredients_add', 'Database Error, failed to modify menu item.');
+			return FALSE;
+		}
+		
+		return TRUE;
+	}
+	
+	public function check_ingredients_modify($id)
+	{
+		$id = (int)$id;
+   		$name = $this->input->post('name');
+   		$stock = (int)$this->input->post('stock');
+		$available = (bool)$this->input->post('available');
+		
+		$this->load->model("Ingredients");
+		   
+		$session_data = $this->session->userdata('logged_in');
+		
+		$result = $this->Ingredients->mod_ingredients($id, $name, $available, $stock, $session_data->id);
+			
+		if ($result === FALSE)
+		{
+			$this->form_validation->set_message('check_ingredients_add', 'Database Error, failed to modify menu item.');
+			return FALSE;
+		}
+		
+		return TRUE;
+	}
+	
+	public function ingredients_remove($id)
+	{
+		$session_data = $this->session->userdata('logged_in');
+		
+		$this->load->model("Ingredients");
+		
+		$this->Ingredients->del_ingredients((int)$id, $session_data->id);
+		
+		redirect('admin/ingredients', 'refresh');
 	}
 	
 	public function logout()

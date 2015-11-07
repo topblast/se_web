@@ -8,6 +8,35 @@ class Ingredients extends CI_Model {
 		$this->load->database();
 	}
 	
+	public function get_ingredient($id)
+	{
+		$id = (int)$id;
+		
+		$query = 'SELECT "ing_id" as id, "ing_name" as name, "ing_available" as available, "ing_stock" as stock FROM "ingredients" WHERE "ing_id"=?;';
+		$result = $this->db->query($query, array($id));
+		
+		if ($result->num_rows() == 0)
+		{
+			return NULL;
+		}
+		
+		return $result->row();
+	}
+	
+	public function list_ingredients()
+	{
+		$query = 'SELECT "ing_id" as id, "ing_name" as name, "ing_available" as available, "ing_stock" as stock FROM "ingredients";';
+		
+		$result = $this->db->query($query);
+		
+		if ($result->num_rows() == 0)
+		{
+			return array();
+		}
+		
+		return $result->result();
+	}
+	
 	public function new_ingredients($ig_name, $available, $stock, $staff)
 	{
 		if (!isset($staff))
@@ -56,20 +85,6 @@ class Ingredients extends CI_Model {
 		
 		$this->db->query($log_ing, array($staff, $id, $id));
 		$this->db->query($query_ing, array($id));
-	}
-	
-	public function list_ingredients()
-	{
-		$query = 'SELECT "ing_id" as id, "ing_name" as name, "ing_available" as available, "ing_stock" as stock FROM "ingredients";';
-		
-		$result = $this->db->query($query);
-		
-		if ($result->num_rows() == 0)
-		{
-			return array();
-		}
-		
-		return $result->result();
 	}
 }
 ?>

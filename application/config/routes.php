@@ -58,3 +58,9 @@ $route['admin/menu/add/verify'] = "admin/verify_menu_add";
 $route['admin/menu/modify/(:num)'] = "admin/menu_modify/$1";
 $route['admin/menu/delete/(:num)'] = "admin/menu_remove/$1";
 $route['admin/menu/modify/verify/(:num)'] = "admin/verify_menu_modify/$1";
+
+$route['admin/ingredients/add'] = "admin/ingredients_add";
+$route['admin/ingredients/add/verify'] = "admin/verify_ingredients_add";
+$route['admin/ingredients/modify/(:num)'] = "admin/ingredients_modify/$1";
+$route['admin/ingredients/delete/(:num)'] = "admin/ingredients_remove/$1";
+$route['admin/ingredients/modify/verify/(:num)'] = "admin/verify_ingredients_modify/$1";
