@@ -5,6 +5,7 @@
 	<div class="panel-heading"><h2>Menu Item</h2></div>
 	<div class="panel-body">
 		<?php echo validation_errors('<div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">Error:</span>', '</div>'); ?>
+		<?php if ($error) : ?><div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">Error:</span>Failed to add item!</div><?php endif; ?>
 		<?php echo form_open_multipart("admin/menu/modify/verify/$id"); ?>
 		<?php echo form_upload('image'); ?>
 		<div class="input-group">

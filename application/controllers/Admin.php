@@ -10,6 +10,19 @@ class Admin extends CI_Controller {
 		{
 			redirect('login', 'refresh');
 		}
+		
+		$this->load->model("Staff");
+		
+		$user = $this->Staff->get_updated_info($this->session->userdata('logged_in')->id);
+		
+		if ($user === FALSE)
+		{
+			$this->session->unset_userdata('logged_in');
+		}
+		else
+		{
+			$this->session->set_userdata('logged_in', $user);
+		}
 	}
 	
 	public function index()
@@ -22,7 +35,7 @@ class Admin extends CI_Controller {
 		
 		$this->load->helper(array('form'));
 		$this->load->view('head', ['page_title' => "Admin"]);
-		$this->load->view('admin/head', ['firstname' => $session_data->firstname,'lastname' => $session_data->lastname]);
+		$this->load->view('admin/head', ['firstname' => $session_data->firstname,'lastname' => $session_data->lastname, 'isadmin' => $session_data->admin]);
 		$this->load->view('admin/menu/list', ['list' => $menu]);
 		$this->load->view('foot');
 	}
@@ -37,12 +50,12 @@ class Admin extends CI_Controller {
 		
 		$this->load->helper(array('form'));
 		$this->load->view('head', ['page_title' => "Admin"]);
-		$this->load->view('admin/head', ['firstname' => $session_data->firstname,'lastname' => $session_data->lastname]);
+		$this->load->view('admin/head', ['firstname' => $session_data->firstname,'lastname' => $session_data->lastname, 'isadmin' => $session_data->admin]);
 		$this->load->view('admin/menu/list', ['list' => $menu]);
 		$this->load->view('foot');
 	}
 	
-	public function menu_add()
+	public function menu_add($error=NULL)
 	{
 		$session_data = $this->session->userdata('logged_in');
 		
@@ -52,8 +65,8 @@ class Admin extends CI_Controller {
 		
 		$this->load->helper(array('form'));
 		$this->load->view('head', ['page_title' => "Admin"]);
-		$this->load->view('admin/head', ['firstname' => $session_data->firstname,'lastname' => $session_data->lastname]);
-		$this->load->view('admin/menu/add', ['list' => $ingredients]);
+		$this->load->view('admin/head', ['firstname' => $session_data->firstname,'lastname' => $session_data->lastname, 'isadmin' => $session_data->admin]);
+		$this->load->view('admin/menu/add', ['error'=> ($error !== NULL),'list' => $ingredients]);
 		$this->load->view('foot');
 	}
 	
@@ -67,9 +80,9 @@ class Admin extends CI_Controller {
 		$this->form_validation->set_rules('image', 'Image', 'trim|xss_clean|callback_do_upload');
 		$this->form_validation->set_rules('blank', 'ERROR', 'callback_check_menu_add');
 		
-		if ($this->form_validation->run() == FALSE)
+		if ($this->form_validation->run() == FALSE || $this->check_menu_add())
 		{
-			$this->menu_add();
+			$this->menu_add(TRUE);
 		}
 		else
 		{
@@ -97,7 +110,7 @@ class Admin extends CI_Controller {
 		return TRUE;
 	}
 	
-	public function check_menu_add($blank)
+	public function check_menu_add()
 	{
    		$name = $this->input->post('name');
    		$price = $this->input->post('price');
@@ -126,7 +139,7 @@ class Admin extends CI_Controller {
 		return TRUE;
 	}
 	
-	public function menu_modify($id)
+	public function menu_modify($id, $error=NULL)
 	{
 		$session_data = $this->session->userdata('logged_in');
 		
@@ -149,8 +162,8 @@ class Admin extends CI_Controller {
 		
 		$this->load->helper(array('form'));
 		$this->load->view('head', ['page_title' => "Admin"]);
-		$this->load->view('admin/head', ['firstname' => $session_data->firstname,'lastname' => $session_data->lastname]);
-		$this->load->view('admin/menu/modify', ['id'=>$id, 'ids' =>$ids, 'list' => $ingredients, 'name' => $menu->name, 'price' => number_format($menu->price, 2)]);
+		$this->load->view('admin/head', ['firstname' => $session_data->firstname,'lastname' => $session_data->lastname, 'isadmin' => $session_data->admin]);
+		$this->load->view('admin/menu/modify', ['error'=> ($error !== NULL),'id'=>$id, 'ids' =>$ids, 'list' => $ingredients, 'name' => $menu->name, 'price' => number_format($menu->price, 2)]);
 		$this->load->view('foot');
 	}
 	
@@ -165,9 +178,9 @@ class Admin extends CI_Controller {
 		$_POST['id'] = $id;
 		$this->form_validation->set_rules('id', 'ERROR', 'callback_check_menu_modify');
 		
-		if ($this->form_validation->run() == FALSE)
+		if ($this->form_validation->run() == FALSE || !$this->check_menu_modify($id))
 		{
-			$this->menu_modify($id);
+			$this->menu_modify($id, TRUE);
 		}
 		else
 			redirect('admin/menu', 'refresh');
@@ -237,7 +250,7 @@ class Admin extends CI_Controller {
 		
 		$this->load->helper(array('form'));
 		$this->load->view('head', ['page_title' => "Admin"]);
-		$this->load->view('admin/head', ['firstname' => $session_data->firstname,'lastname' => $session_data->lastname]);
+		$this->load->view('admin/head', ['firstname' => $session_data->firstname,'lastname' => $session_data->lastname, 'isadmin' => $session_data->admin]);
 		$this->load->view('admin/ingredient/list', ['list' => $menu]);
 		$this->load->view('foot');
 	}
@@ -248,12 +261,12 @@ class Admin extends CI_Controller {
 		
 		$this->load->helper(array('form'));
 		$this->load->view('head', ['page_title' => "Admin"]);
-		$this->load->view('admin/head', ['firstname' => $session_data->firstname,'lastname' => $session_data->lastname]);
+		$this->load->view('admin/head', ['firstname' => $session_data->firstname,'lastname' => $session_data->lastname, 'isadmin' => $session_data->admin]);
 		$this->load->view('admin/ingredient/add');
 		$this->load->view('foot');
 	}
 	
-	public function ingredients_modify($id)
+	public function ingredients_modify($id, $error=NULL)
 	{
 		$session_data = $this->session->userdata('logged_in');
 		
@@ -268,7 +281,7 @@ class Admin extends CI_Controller {
 		
 		$this->load->helper(array('form'));
 		$this->load->view('head', ['page_title' => "Admin"]);
-		$this->load->view('admin/head', ['firstname' => $session_data->firstname,'lastname' => $session_data->lastname]);
+		$this->load->view('admin/head', ['firstname' => $session_data->firstname,'lastname' => $session_data->lastname, 'isadmin' => $session_data->admin]);
 		$this->load->view('admin/ingredient/modify', ['id'=>$id, 'name' => $ing->name, 'available' => (bool)$ing->available, 'stock' => (int)$ing->stock]);
 		$this->load->view('foot');
 	}
@@ -282,11 +295,9 @@ class Admin extends CI_Controller {
 		$this->form_validation->set_rules('stock', 'Stock', 'trim|required|xss_clean');
 		$this->form_validation->set_rules('available', 'Available', 'trim|xss_clean');
 		
-		$this->form_validation->set_rules('blank', 'ERROR', 'callback_check_ingredients_add');
-		
-		if ($this->form_validation->run() == FALSE)
+		if ($this->form_validation->run() == FALSE || $this->check_ingredients_add())
 		{
-			$this->ingredients_add();
+			$this->ingredients_add(TRUE);
 		}
 		else
 		{
@@ -305,9 +316,9 @@ class Admin extends CI_Controller {
 		$_POST['id'] = $id;
 		$this->form_validation->set_rules('id', 'ERROR', 'callback_check_ingredients_modify');
 		
-		if ($this->form_validation->run() == FALSE)
+		if ($this->form_validation->run() == FALSE || $this->check_ingredients_modify($id))
 		{
-			$this->ingredients_add();
+			$this->ingredients_modify($id, TRUE);
 		}
 		else
 		{
@@ -315,7 +326,7 @@ class Admin extends CI_Controller {
 		}
 	}
 	
-	public function check_ingredients_add($blank)
+	public function check_ingredients_add()
 	{
    		$name = $this->input->post('name');
    		$stock = (int)$this->input->post('stock');
