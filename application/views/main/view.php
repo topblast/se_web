@@ -55,7 +55,7 @@
 		</div>
 	</div>
 	<div class="panel-footer">
-		<a href="<?php echo site_url('admin/menu/add'); ?>" class="btn btn-default">Admin Login</a>
+		<a href="<?php echo site_url('login'); ?>" class="btn btn-default">Admin Login</a>
 	</div>
 </div>
 
