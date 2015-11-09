@@ -6,6 +6,7 @@ class Ingredients extends CI_Model {
 	{
 		parent::__construct();
 		$this->load->database();
+		$this->db->query('PRAGMA foreign_keys = ON;');
 	}
 	
 	public function get_ingredient($id)
