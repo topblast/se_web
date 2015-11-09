@@ -2,9 +2,9 @@
 	<h1>Administrator</h1>
 </div>
 <div class="panel panel-default">
-	<div class="panel-heading"><h2>Menu List</h2></div>
+	<div class="panel-heading"><h2>Staff Account List</h2></div>
 	<div class="panel-body">
-		<a href="<?php echo site_url('manage/add'); ?>" class="btn btn-default"><span class="glyphicon glyphicon-plus-sign"></span> Add Item</a>
+		<a href="<?php echo site_url('manage/add'); ?>" class="btn btn-default"><span class="glyphicon glyphicon-plus-sign"></span> Add Staff Account</a>
 	</div>
 	
 	<table class="table">

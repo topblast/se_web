@@ -5,6 +5,25 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title><?php echo $page_title; ?></title>
 		<link rel="stylesheet" type="text/css" href="<?php echo base_url('bootstrap/css/bootstrap.min.css'); ?>">
+		<style>
+			.navbar-inverse {
+				background-color: #600000;
+				border-color: #480808;
+			}
+			
+			.navbar-inverse .navbar-nav > .active > a,
+			.navbar-inverse .navbar-nav > .active:hover > a{
+				background-color: #900000;
+			}
+			
+			.input-group { 
+				width: 100%;
+			}
+			.input-group-addon{
+				width: 100px;
+			}
+			
+		</style>
     	<script src="<?php echo base_url('jquery/jquery-2.1.4.min.js');?>"></script>
     	<script src="<?php echo base_url('bootstrap/js/bootstrap.min.js');?>"></script>
 		<script>

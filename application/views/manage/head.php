@@ -15,7 +15,7 @@
 				<li><a href="<?php echo site_url('admin/ingredients'); ?>">Ingredients</a></li>
 				<li class="active"><a href="<?php echo site_url('manage'); ?>">Management</a></li>
 			</ul>
-			<a class="navbar-right btn btn-default navbar-btn" href="<?php echo site_url('admin/logout'); ?>"><span class="glyphicon glyphicon-lock"></span>Logout</a>
+			<a class="navbar-right btn btn-default navbar-btn" style="margin-left: 15px;" href="<?php echo site_url('admin/logout'); ?>"><span class="glyphicon glyphicon-lock"></span>Logout</a>
 			<p class="navbar-text navbar-right">Hello <?php echo $firstname. ' ' .$lastname; ?>, </p>
 		</div>
 	</div>

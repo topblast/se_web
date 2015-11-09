@@ -78,9 +78,9 @@ class Admin extends CI_Controller {
 		$this->form_validation->set_rules('price', 'Price', 'trim|required|xss_clean');
 		$this->form_validation->set_rules('check[]', 'Ingredients', 'trim|required|xss_clean');
 		$this->form_validation->set_rules('image', 'Image', 'trim|xss_clean|callback_do_upload');
-		$this->form_validation->set_rules('blank', 'ERROR', 'callback_check_menu_add');
+		//$this->form_validation->set_rules('blank', 'ERROR', 'callback_check_menu_add');
 		
-		if ($this->form_validation->run() == FALSE || $this->check_menu_add())
+		if ($this->form_validation->run() == FALSE || $this->check_menu_add() == FALSE)
 		{
 			$this->menu_add(TRUE);
 		}
@@ -104,7 +104,7 @@ class Admin extends CI_Controller {
 		if ( ! $this->upload->do_upload('image') && $_FILES['image']['error'] != 4)
         {
 			$this->form_validation->set_message('do_upload', $this->upload->display_errors());
-			echo $this->upload->display_errors();
+			
 			return FALSE;
 		}
 		return TRUE;
@@ -175,10 +175,10 @@ class Admin extends CI_Controller {
 		$this->form_validation->set_rules('price', 'Price', 'trim|required|xss_clean');
 		$this->form_validation->set_rules('check[]', 'Ingredients', 'trim|required|xss_clean');
 		$this->form_validation->set_rules('image', 'Image', 'trim|xss_clean|callback_do_upload');
-		$_POST['id'] = $id;
-		$this->form_validation->set_rules('id', 'ERROR', 'callback_check_menu_modify');
+		//$_POST['id'] = $id;
+		//$this->form_validation->set_rules('id', 'ERROR', 'callback_check_menu_modify');
 		
-		if ($this->form_validation->run() == FALSE || !$this->check_menu_modify($id))
+		if ($this->form_validation->run() == FALSE || $this->check_menu_modify($id) == FALSE)
 		{
 			$this->menu_modify($id, TRUE);
 		}
@@ -255,13 +255,13 @@ class Admin extends CI_Controller {
 		$this->load->view('foot');
 	}
 	
-	public function ingredients_add()
+	public function ingredients_add($error=NULL)
 	{
 		$session_data = $this->session->userdata('logged_in');
 		
 		$this->load->helper(array('form'));
 		$this->load->view('head', ['page_title' => "Admin"]);
-		$this->load->view('admin/head', ['firstname' => $session_data->firstname,'lastname' => $session_data->lastname, 'isadmin' => $session_data->admin]);
+		$this->load->view('admin/head', ['error'=> ($error !== NULL),'firstname' => $session_data->firstname,'lastname' => $session_data->lastname, 'isadmin' => $session_data->admin]);
 		$this->load->view('admin/ingredient/add');
 		$this->load->view('foot');
 	}
@@ -282,7 +282,7 @@ class Admin extends CI_Controller {
 		$this->load->helper(array('form'));
 		$this->load->view('head', ['page_title' => "Admin"]);
 		$this->load->view('admin/head', ['firstname' => $session_data->firstname,'lastname' => $session_data->lastname, 'isadmin' => $session_data->admin]);
-		$this->load->view('admin/ingredient/modify', ['id'=>$id, 'name' => $ing->name, 'available' => (bool)$ing->available, 'stock' => (int)$ing->stock]);
+		$this->load->view('admin/ingredient/modify', ['error'=> ($error !== NULL),'id'=>$id, 'name' => $ing->name, 'available' => (bool)$ing->available, 'stock' => (int)$ing->stock]);
 		$this->load->view('foot');
 	}
 	
@@ -295,7 +295,7 @@ class Admin extends CI_Controller {
 		$this->form_validation->set_rules('stock', 'Stock', 'trim|required|xss_clean');
 		$this->form_validation->set_rules('available', 'Available', 'trim|xss_clean');
 		
-		if ($this->form_validation->run() == FALSE || $this->check_ingredients_add())
+		if ($this->form_validation->run() == FALSE || $this->check_ingredients_add() == FALSE)
 		{
 			$this->ingredients_add(TRUE);
 		}
@@ -316,7 +316,7 @@ class Admin extends CI_Controller {
 		$_POST['id'] = $id;
 		$this->form_validation->set_rules('id', 'ERROR', 'callback_check_ingredients_modify');
 		
-		if ($this->form_validation->run() == FALSE || $this->check_ingredients_modify($id))
+		if ($this->form_validation->run() == FALSE || $this->check_ingredients_modify($id) == FALSE)
 		{
 			$this->ingredients_modify($id, TRUE);
 		}

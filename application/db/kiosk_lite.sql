@@ -1,5 +1,7 @@
-PRAGMA synchronous = OFF;
+PRAGMA synchronous = FULL;
 PRAGMA journal_mode = MEMORY;
+PRAGMA foreign_keys = ON;
+
 BEGIN TRANSACTION;
 CREATE TABLE "ingredients" (
   "ing_id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -73,52 +75,5 @@ CREATE INDEX "log_menu_items_log_staff_id" ON "log_menu_items" ("log_staff_id","
 CREATE INDEX "log_menu_items_menu_id" ON "log_menu_items" ("menu_id");
 CREATE INDEX "menu_ingredients_menu_id" ON "menu_ingredients" ("menu_id","ing_id");
 CREATE INDEX "menu_ingredients_ing_id" ON "menu_ingredients" ("ing_id");
-/*
-CREATE PROCEDURE del_inglink(id integer, staff INT) AS
-BEGIN
-	INSERT INTO log_menu_ingredients (log_staff_id,log_type,rel_id,menu_id,ing_id) SELECT staff as s , 'delete' as t, id as ident, i.menu_id, i.ing_id FROM menu_ingredients AS i WHERE i.rel_id = id;
 
-	DELETE FROM menu_ingredients WHERE rel_id = id;
-END;
-
-CREATE PROCEDURE del_ingredients(id INT, staff INT)
-  AS
-BEGIN
-	INSERT INTO log_ingredients (log_staff_id,log_type,ing_id,ing_name,ing_available,ing_stock) SELECT staff as s , 'delete' as t, id as ident, i.ing_name, i.ing_available, i.ing_stock FROM ingredients AS i WHERE i.ing_id = id;
-
-	DELETE FROM ingredients WHERE ing_id = id;
-END;
-
-CREATE PROCEDURE mod_inglink(id INT, m_id INT, i_id INT)
-  AS
-BEGIN
-	UPDATE menu_ingredients SET menu_id=m_id, ing_id=i_id WHERE rel_id = id;
-
-	INSERT INTO log_menu_ingredients (log_staff_id,log_type,rel_id,menu_id,ing_id) VALUES (staff, 'modify', id, m_id, i_id);
-END;
-
-CREATE PROCEDURE mod_ingredients(id int, ig_name VARCHAR(64), available BOOLEAN, stock INT, staff INT)
-  AS
-BEGIN
-	UPDATE ingredients SET ing_name=ig_name, ing_available=available, ing_stock=stock WHERE ing_id = id;
-
-	INSERT INTO log_ingredients (log_staff_id,log_type,ing_id,ing_name,ing_available,ing_stock) VALUES (staff, 'modify', id, ig_name, available, stock);
-END
-
-CREATE PROCEDURE new_inglink(m_id INT, i_id INT)
-  AS
-BEGIN	 
-	INSERT INTO menu_ingredients (menu_id, ing_id) VALUES (m_id, i_id);
-
-	INSERT INTO log_menu_ingredients (log_staff_id,log_type,rel_id,menu_id,ing_id) VALUES (staff, 'insert', LAST_INSERT_ID(), m_id, i_id);
-END
-
-CREATE PROCEDURE new_ingredients(ig_name VARCHAR(64), available BOOLEAN, stock INT, staff INT)
-  AS
-BEGIN	 
-	INSERT INTO ingredients (ing_name, ing_available, ing_stock) VALUES (ig_name, available, stock);
-
-	INSERT INTO log_ingredients (log_staff_id,log_type,ing_id,ing_name,ing_available,ing_stock) VALUES (staff, 'insert', LAST_INSERT_ID(), ig_name, available, stock);
-END
-*/
 END TRANSACTION;

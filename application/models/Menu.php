@@ -142,8 +142,8 @@ class Menu extends CI_Model {
 		
 		$img = $res->row()->menu_image;
 		
-		if (!is_null($img))
-			unlink("./images/".$res->row()->menu_image);
+		if (!is_null($img) && file_exists("./images/".$img))
+			unlink("./images/".$img);
 		
 		$query_ing = 'UPDATE "menu_items" SET "menu_name"=?, "menu_price"=?, "menu_image"=? WHERE "menu_id" = ?;';
 		$log_ing = 'INSERT INTO "log_menu_items" ("log_staff_id","log_type","menu_id","menu_name","menu_price", "menu_image") VALUES (?, \'modify\',?,?,?,?);';
@@ -182,7 +182,7 @@ class Menu extends CI_Model {
 		if ($res->num_rows() == 0)
 			return FALSE;
 		$img = $res->row()->menu_image;
-		if (!is_null($img))
+		if (!is_null($img) && file_exists("./images/".$img))
 			unlink("./images/".$res->row()->menu_image);
 		$query_ing = 'DELETE FROM "menu_items" WHERE "menu_id" = ?;';
 		$log_ing = 'INSERT INTO "log_menu_items" ("log_staff_id","log_type","menu_id","menu_name","menu_price", "menu_image") SELECT ? as s , \'delete\' as t, i."menu_id", i."menu_name", i."menu_price", i."menu_image" FROM "menu_items" AS i WHERE i."menu_id" = ?;';

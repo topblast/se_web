@@ -24,7 +24,6 @@ class Manage extends CI_Controller {
 	{
 		if (!$this->User->admin)
 		{
-			exit;
 			redirect('admin', 'refresh');
 		}
 		

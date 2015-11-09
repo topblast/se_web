@@ -1,8 +1,13 @@
+<style>
+	.input-group-addon{
+		width: 140px;
+	}
+</style>
 <div class="page-header">
-	<h1>Modify Menu Item</h1>
+	<h1>Modify Staff Account</h1>
 </div>
 <div class="panel panel-default">
-	<div class="panel-heading"><h2>Menu Item</h2></div>
+	<div class="panel-heading"><h2>Staff Information</h2></div>
 	<div class="panel-body">
 		<?php echo validation_errors('<div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">Error:</span>', '</div>'); ?>
 		<?php if ($error) : ?><div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">Error:</span>Failed to add item!</div><?php endif; ?>
