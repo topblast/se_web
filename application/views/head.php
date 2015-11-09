@@ -25,13 +25,8 @@
 			body{
 				background-image: url(<?php echo base_url('images/WoodFine0010.jpg'); ?>);;
 			}
-			.panel {
-				background-color: rgba(0, 0, 0, 0.5);
-				border-color: #000;
-			}
 			.panel-default>.panel-heading{
 				background-color: rgba(169, 68, 66, 0.75);
-				border-color: #000;
 			}
 		</style>
     	<script src="<?php echo base_url('jquery/jquery-2.1.4.min.js');?>"></script>

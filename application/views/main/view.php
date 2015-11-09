@@ -18,6 +18,10 @@
 	.some-panel{
 		margin-bottom:10px;
 	}
+	.panel {
+		background-color: rgba(0, 0, 0, 0.5);
+		border-color: #000;
+	}
 </style>
 <nav class="navbar navbar-inverse">
 	<div class="container-fluid">
