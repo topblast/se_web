@@ -64,7 +64,7 @@ CREATE TABLE "staff" (
   "staff_admin" tinyint(1) NOT NULL,
   "staff_lastlogged" datetime DEFAULT NULL
 );
-INSERT INTO "staff" VALUES (0,'test','Rashawn','Clarke','098f6bcd4621d373cade4e832627b4f6','',1,NULL);
+INSERT INTO "staff" VALUES (0,'admin','Administrator','','5764d5713a7f24c82b30d271460bf68c','098f6bcd4621d373cade4e832627b4f6',1,NULL);
 CREATE INDEX "log_ingredients_log_staff_id" ON "log_ingredients" ("log_staff_id","log_datetime","log_type","ing_id");
 CREATE INDEX "log_ingredients_ing_id" ON "log_ingredients" ("ing_id");
 CREATE INDEX "log_menu_ingredients_log_staff_id" ON "log_menu_ingredients" ("log_staff_id","log_datetime","log_type","rel_id","menu_id","ing_id");
