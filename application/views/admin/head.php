@@ -11,6 +11,7 @@
 		</div>
 		<div class="collapse navbar-collapse" id="menu-collapse">
 			<ul class="nav navbar-nav">
+				<li><a href="<?php echo site_url(); ?>">Home</a></li>
 				<li class="<?php if ($this->uri->segment(2) == 'menu' || $this->uri->segment(2) == FALSE) echo 'active'; ?>"><a href="<?php echo site_url('admin/menu'); ?>">Menu</a></li>
 				<li class="<?php if ($this->uri->segment(2) == 'ingredients') echo 'active'; ?>"><a href="<?php echo site_url('admin/ingredients'); ?>">Ingredients</a></li>
 				<?php if ($isadmin): ?><li><a href="<?php echo site_url('manage'); ?>">Management</a></li><?php endif; ?>

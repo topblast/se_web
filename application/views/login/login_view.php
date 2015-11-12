@@ -15,5 +15,6 @@
 			<input type="password" name="password" class="form-control" placeholder="Password" aria-describeby="password-addon">
 		</div>
 		<input type="submit" class="btn btn-default" value="Login">
+		<a href="<?php echo site_url(); ?>" class="btn btn-default">Home</a>
 	</div>
 </div>

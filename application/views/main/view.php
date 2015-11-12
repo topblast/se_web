@@ -22,15 +22,24 @@
 		background-color: rgba(0, 0, 0, 0.5);
 		border-color: #000;
 	}
+	.panel-footer > p {
+		margin-bottom: 0px;
+	}
+	.panel-footer > p:not(:first-child){
+		margin-left: 20px;
+	}
 </style>
 <nav class="navbar navbar-inverse">
 	<div class="container-fluid">
 		<div class="navbar-header">
-			<h1>Welcome to The Kiosk Restaurant</h1>
+			<h1>Welcome to The Kiosk</h1>
 		</div>
 	</div>
 	<div class="panel-footer">
-		Open weekdays: 10:30 am ~ 7:00pm 
+		<p>Opening Hours:</p>
+		<p>Mondays - Fridays: 10:30am - 7:00pm</p>
+		<p>Saturdays: 11:00am - 3:00pm</p>
+		<p>Sundays: Closed</p> 
 	</div>
 </nav>
 
@@ -59,7 +68,12 @@
 		</div>
 	</div>
 	<div class="panel-footer">
+		<?php if ($loggedin): ?>
+		<a href="<?php echo site_url('admin/menu'); ?>" class="btn btn-default">Admin Menu</a>
+		<a href="<?php echo site_url('admin/ingredients'); ?>" class="btn btn-default">Admin Ingredients</a>
+		<?php else: ?>
 		<a href="<?php echo site_url('login'); ?>" class="btn btn-default">Admin Login</a>
+		<?php endif; ?>
 	</div>
 </div>
 

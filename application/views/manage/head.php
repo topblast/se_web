@@ -11,6 +11,7 @@
 		</div>
 		<div class="collapse navbar-collapse" id="menu-collapse">
 			<ul class="nav navbar-nav">
+				<li><a href="<?php echo site_url(); ?>">Home</a></li>
 				<li><a href="<?php echo site_url('admin/menu'); ?>">Menu</a></li>
 				<li><a href="<?php echo site_url('admin/ingredients'); ?>">Ingredients</a></li>
 				<li class="active"><a href="<?php echo site_url('manage'); ?>">Management</a></li>

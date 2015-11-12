@@ -15,7 +15,7 @@ class Home extends CI_Controller {
 		
 		$this->load->helper(array('form'));
 		$this->load->view('head', ['page_title' => "Welcome to the Kiosk"]);
-		$this->load->view('main/view', ['list' => $menu]);
+		$this->load->view('main/view', ['list' => $menu, 'loggedin' => $this->session->userdata('logged_in')]);
 		$this->load->view('foot');
 	}
 }
