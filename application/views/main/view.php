@@ -36,10 +36,7 @@
 		</div>
 	</div>
 	<div class="panel-footer">
-		<p>Opening Hours:</p>
-		<p>Mondays - Fridays: 10:30am - 7:00pm</p>
-		<p>Saturdays: 11:00am - 3:00pm</p>
-		<p>Sundays: Closed</p> 
+		<p>Mondays - Fridays: 10:30am - 7:00pm | Saturdays: 11:00am - 3:00pm | Sundays: CLOSED</p> 
 	</div>
 </nav>
 
